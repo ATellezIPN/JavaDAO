@@ -41,7 +41,7 @@ public class Escuela implements java.io.Serializable{
         this.idLocalidad = idLocalidad;
     }
     
-    public String detClaveEscuela(){
+    public String setClaveEscuela(){
         return claveEscuela;
     }
 }

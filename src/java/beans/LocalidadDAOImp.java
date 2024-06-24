@@ -65,6 +65,9 @@ public class LocalidadDAOImp implements LocalidadDAO{
                         rs.getInt("idLocalidad"),
                         rs.getString("nombreLocalidad"),
                         rs.getInt("idEntidad"));
+                    localidad.setEntidad(new Entidad(
+                            rs.getInt("idEntidad"),
+                            rs.getString("nombreEntidad")));
                     localidades.add(localidad);
                 }
             }
@@ -74,16 +77,43 @@ public class LocalidadDAOImp implements LocalidadDAO{
 
     @Override
     public void insert(Localidad localidad) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        conn = conMySQL.getConnection();
+        String insertQuery = "INSERT INTO "+TABLE_NAME+" (nombreLocalidad, idEntidad)"
+                +"VALUES(?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(insertQuery)){
+            ps.setString(1, localidad.getNombreLocalidad());
+            ps.setInt(2, localidad.getIdEntidad());
+            ps.executeUpdate();
+        }
+        conn.close();
     }
 
     @Override
-    public void update(Localidad localidad) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+public void update(Localidad localidad) throws SQLException {
+    conn = conMySQL.getConnection();
+    String updateQuery = "UPDATE " + TABLE_NAME
+            + " SET nombreLocalidad = ?,"
+            + " idEntidad = ?"
+            + " WHERE idLocalidad = ?";
+    try (PreparedStatement ps = conn.prepareStatement(updateQuery)) {
+        // agregar parámetros y ejecutar la actualización
+        ps.setString(1, localidad.getNombreLocalidad());
+        ps.setInt(2, localidad.getIdEntidad());
+        ps.setInt(3, localidad.getIdLocalidad());
+        ps.executeUpdate();
     }
+    conn.close();
+}
 
     @Override
     public void delete(Integer id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        conn = conMySQL.getConnection();
+        String deleteQuery = "DELETE FROM "+TABLE_NAME
+                + " WHERE idLocalidad = ?";
+        try(PreparedStatement ps = conn.prepareStatement(deleteQuery)){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+        conn.close();
     }
-}
+} 
